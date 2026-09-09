@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Godle Games LLC — home of Gödle, Gödle Hex, CORDLLE, puzzle books, and more." />
+  <meta name="theme-color" content="#0b0b0b" />
+
+  <title>Godle Games | Gödle, Gödle Hex & CORDLLE</title>
+
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --panel: #151515;
+      --panel-2: #1d1d1d;
+      --text: #f7f7f7;
+      --muted: #b7b7b7;
+      --border: #303030;
+      --red: #d62828;
+      --red-hover: #ef3b3b;
+      --green: #2e9f4d;
+      --yellow: #e0b22f;
+      --gray: #6a6a6a;
+      --shadow: 0 14px 38px rgba(0,0,0,.32);
+    }
+
+    body.light {
+      --bg: #f6f6f6;
+      --panel: #ffffff;
+      --panel-2: #f0f0f0;
+      --text: #111111;
+      --muted: #5f5f5f;
+      --border: #d8d8d8;
+      --shadow: 0 14px 30px rgba(0,0,0,.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    a.button {
+      font: inherit;
+    }
+
+    .page-shell {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      transform: rotate(45deg);
+    }
+
+    .brand-mark span {
+      display: block;
+      border-radius: 3px;
+    }
+
+    .brand-mark span:nth-child(1) { background: var(--green); }
+    .brand-mark span:nth-child(2) { background: var(--yellow); border-radius: 50%; }
+    .brand-mark span:nth-child(3) { background: var(--green); }
+    .brand-mark span:nth-child(4) { background: var(--gray); }
+
+
+    .brand-text {
+      color: #00bcd4;
+    }
+
+    .brand-text small {
+      display: block;
+      color: var(--muted);
+      font-size: .67rem;
+      letter-spacing: .12em;
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    nav a,
+    .theme-toggle {
+      text-decoration: none;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 9px 12px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    nav a:hover,
+    .theme-toggle:hover {
+      color: var(--text);
+      border-color: var(--border);
+      background: var(--panel);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 86px 0 62px;
+    }
+
+    .eyebrow {
+      color: var(--red);
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: .15em;
+      font-size: .78rem;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3.2rem, 9vw, 7rem);
+      line-height: .92;
+      letter-spacing: -.05em;
+    }
+
+    .hero p {
+      width: min(700px, 100%);
+      margin: 22px auto 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+
+    .clue-row {
+      margin: 32px auto 0;
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+
+    .clue-tile {
+      width: 46px;
+      height: 46px;
+      border: 2px solid var(--border);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      background: var(--panel);
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+
+    .clue-tile.green {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .clue-tile.yellow {
+      background: var(--yellow);
+      border-color: var(--yellow);
+      color: #111;
+      border-radius: 50%;
+    }
+
+    .clue-tile.red {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    .section {
+      padding: 34px 0 60px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.65rem);
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    .game-grid,
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      position: relative;
+      min-height: 280px;
+      padding: 26px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(145deg, var(--panel), var(--panel-2));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .18s ease, border-color .18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--red);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border: 18px solid var(--red);
+      opacity: .05;
+      border-radius: 24px;
+      transform: rotate(24deg);
+      right: -55px;
+      bottom: -55px;
+    }
+
+    .cadence {
+      font-size: .75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--red);
+    }
+
+    .card h3 {
+      margin: 10px 0 10px;
+      font-size: 2rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      margin: 0 0 22px;
+    }
+
+    .card-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid var(--red);
+      background: var(--red);
+      color: #fff;
+      transition: background .18s ease, transform .18s ease;
+    }
+
+    .button:hover {
+      background: var(--red-hover);
+      transform: translateY(-1px);
+    }
+
+    .button.secondary {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .button.secondary:hover {
+      border-color: var(--red);
+      background: var(--panel-2);
+    }
+
+    .micro-board {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 4px 0 22px;
+    }
+
+    .micro-board span {
+      width: 21px;
+      height: 21px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .micro-board .g { background: var(--green); border-color: var(--green); }
+    .micro-board .y { background: var(--yellow); border-color: var(--yellow); border-radius: 50%; }
+    .micro-board .r { background: var(--red); border-color: var(--red); }
+
+    .book-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .book-card {
+      min-height: 230px;
+    }
+
+    .coming-soon {
+      display: inline-block;
+      width: fit-content;
+      margin-top: 10px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .about-panel {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--panel);
+      padding: clamp(24px, 5vw, 46px);
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 38px;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .about-panel h2 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 3.3rem);
+    }
+
+    .about-panel p {
+      color: var(--muted);
+      margin: 0;
+      max-width: 680px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 10px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.45rem;
+      color: var(--red);
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    footer {
+      margin-top: 30px;
+      border-top: 1px solid var(--border);
+      padding: 30px 0 42px;
+      color: var(--muted);
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--red);
+    }
+
+
+    .hero-company {
+      color: #00bcd4;
+    }
+
+    .godle-word .letter-l {
+      color: var(--green);
+    }
+
+    .godle-word.letter-e {
+      color: #000;
+    }
+
+    body.light .godle-word.letter-e {
+      color: #000;
+    }
+
+    .button.godle-button {
+      background: #00bcd4;
+      border-color: #00bcd4;
+      color: #111;
+    }
+
+    .button.godle-button:hover {
+      background: #16c9db;
+      border-color: #16c9db;
+    }
+
+    .button.hex-button {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+
+    .button.amazon-button {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .button.amazon-button:hover {
+      background: #39b65b;
+      border-color: #39b65b;
+    }
+
+    .button.cordlle-button {
+      background: var(--yellow);
+      border-color: var(--yellow);
+      color: #111;
+    }
+
+    .button.cordlle-button:hover {
+      background: #f0c53b;
+      border-color: #f0c53b;
+    }
+
+    @media (max-width: 850px) {
+      .game-grid,
+      .book-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-panel {
+        grid-template-columns: 1fr;
+      }
+
+      nav a {
+        display: none;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page-shell {
+        width: min(100% - 22px, 1120px);
+      }
+
+      .hero {
+        padding-top: 64px;
+      }
+
+      .card {
+        min-height: 250px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+  
+    .brand-text {
+      color: #00bcd4;
+    }
+
+    .brand-text small {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="page-shell topbar">
+      <a class="brand" href="#top" aria-label="Godle Games home">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <span class="brand-text">
+          GODLE GAMES
+          <small>LOGIC • MATH • WORDS</small>
+        </span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <a href="#games">Games</a>
+        <a href="#books">Books</a>
+        <a href="#about">About</a>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light or dark theme">☀ / ☾</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero page-shell">
+      <div class="eyebrow hero-company">Godle Games LLC</div>
+      <h1>Think.<br />Solve.<br />Crack it.</h1>
+
+      <p>
+        Daily logic, math, and word puzzles built for people who like a challenge.
+        Play Gödle every day, take on Gödle Hex each week, and return for a new
+        CORDLLE word puzzle every month.
+      </p>
+
+      <div class="clue-row" aria-hidden="true">
+        <span class="clue-tile green">G</span>
+        <span class="clue-tile yellow">Ö</span>
+        <span class="clue-tile">D</span>
+        <span class="clue-tile green">L</span>
+        <span class="clue-tile godle-word letter-e">E</span>
+      </div>
+    </section>
+
+    <section class="section page-shell" id="games">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">Play</div>
+          <h2>Choose your challenge</h2>
+        </div>
+        <p>Three puzzle styles. One Godle Games family.</p>
+      </div>
+
+      <div class="game-grid">
+        <article class="card">
+          <span class="cadence">New every day</span>
+          <h3>Gödle</h3>
+          <div class="micro-board" aria-hidden="true">
+            <span class="g"></span><span></span><span class="y"></span><span></span><span class="g"></span>
+          </div>
+          <p>
+            Solve four math and logic questions, use every digit 0–9 exactly once,
+            then crack the final 5-digit code.
+          </p>
+          <div class="card-actions">
+            <a class="button godle-button" href="https://cordell33.github.io/GodlePuzzle/">Play Gödle</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="cadence">Weekly challenge</span>
+          <h3>Gödle Hex</h3>
+          <div class="micro-board" aria-hidden="true">
+            <span class="r"></span><span></span><span class="y"></span><span class="g"></span><span></span><span class="g"></span>
+          </div>
+          <p>
+            A tougher hexadecimal puzzle using 0–9 and A–F. Work through the pyramid
+            and unlock the final 7-character answer.
+          </p>
+          <div class="card-actions">
+            <a class="button hex-button" href="https://cordell33.github.io/GodleHex/">Play Gödle Hex</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="cadence">New on the 15th</span>
+          <h3>CORDLLE</h3>
+          <div class="micro-board" aria-hidden="true">
+            <span class="g"></span><span class="g"></span><span></span><span class="y"></span><span></span><span class="g"></span>
+          </div>
+          <p>
+            A logic-and-vocabulary word challenge inspired by Gödle rules.
+            Solve the clues and use the feedback to reveal the final code word.
+          </p>
+          <div class="card-actions">
+            <a class="button cordlle-button" href="https://cordell33.github.io/Cordlle/">Play CORDLLE</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section page-shell" id="books">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">Books</div>
+          <h2>Take Gödle offline</h2>
+        </div>
+        <p>Puzzle books from Godle Games for solving anywhere.</p>
+      </div>
+
+      <div class="book-grid">
+        <article class="card book-card">
+          <span class="cadence">Available now</span>
+          <h3>Gödle Puzzles</h3>
+          <p>
+            Logic and math code-breaking puzzles in a print format built for
+            pencil-and-paper solving.
+          </p>
+          <div class="card-actions">
+            <a class="button amazon-button" href="https://www.amazon.com/dp/B0GZ218GCF" target="_blank" rel="noopener noreferrer">View on Amazon</a>
+          </div>
+        </article>
+
+        <article class="card book-card">
+          <span class="cadence">Next book</span>
+          <h3>Gödle Puzzles Plus</h3>
+          <p>
+            More classic puzzles plus Gödle Hex and CORDLLE challenges.
+          </p>
+          <span class="coming-soon">Coming soon</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section page-shell" id="about">
+      <div class="about-panel">
+        <div>
+          <div class="eyebrow">About</div>
+          <h2>Built for people who enjoy figuring things out.</h2>
+          <p>
+            Godle Games LLC creates browser-based logic, math, and word puzzles designed
+            to make problem-solving fun, approachable, and worth coming back to.
+          </p>
+        </div>
+
+        <div class="stats" aria-label="Godle Games release schedule">
+          <div class="stat">
+            <strong>Daily</strong>
+            <span>Gödle</span>
+          </div>
+          <div class="stat">
+            <strong>Weekly</strong>
+            <span>Gödle Hex</span>
+          </div>
+          <div class="stat">
+            <strong>Monthly</strong>
+            <span>CORDLLE</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-shell footer-row">
+      <div>© 2026 Godle Games LLC</div>
+      <div class="footer-links">
+        <a href="https://www.facebook.com/groups/2109717096181882" target="_blank" rel="noopener noreferrer">Community</a>
+        <a href="https://cordell33.github.io/GodlePuzzle/">Gödle</a>
+        <a href="https://cordell33.github.io/GodleHex/">Gödle Hex</a>
+        <a href="https://cordell33.github.io/Cordlle/">CORDLLE</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('godle-games-theme');
+
+    if (savedTheme === 'light') {
+      document.body.classList.add('light');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      localStorage.setItem(
+        'godle-games-theme',
+        document.body.classList.contains('light') ? 'light' : 'dark'
+      );
+    });
+  </script>
+</body>
+</html>
